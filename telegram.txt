@@ -1,0 +1,45 @@
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import (
+    ApplicationBuilder,
+    CommandHandler,
+    CallbackQueryHandler,
+    ContextTypes,
+)
+
+TOKEN = "8271675134:AAGD2VOfc5tC3k3Utwsday3bRMhY0XCUyto"
+
+
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    keyboard = [
+        [InlineKeyboardButton("обо мне", callback_data="who_am_i")],
+        [InlineKeyboardButton("мой телеграмм канал", callback_data="channel")],
+        [InlineKeyboardButton("ссылки на соц сети", callback_data="social_links")],
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await update.message.reply_text(
+        "выбери что конкретно ты хочешь узнать:", reply_markup=reply_markup
+    )
+
+
+async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+    if query.data == "who_am_i":
+        await query.edit_message_text(text="привет")
+    elif query.data == "channel":
+        await query.edit_message_text(text="https://t.me/+vo6PyOUuIt5lYjEy")
+    elif query.data == "social_links":
+        await query.edit_message_text(text="Вк: https://vk.com/gizapahx")
+
+
+def main():
+    app = ApplicationBuilder().token(TOKEN).build()
+
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(CallbackQueryHandler(button))
+
+    app.run_polling()
+
+
+if __name__ == "__main__":
+    main()
